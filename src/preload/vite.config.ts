@@ -1,10 +1,14 @@
 import { UserConfig } from "vite";
 import { builtinModules } from "module";
+import dummyApiTransformer from "./vite-plugin-api-transformer";
 
 const config: UserConfig = {
   mode: "production",
   root: __dirname,
   envDir: process.cwd(),
+  plugins: [
+    dummyApiTransformer({ apiTypesFile: '../main/api/index.ts', tsconfigPath: '../../tsconfig.json' })
+  ],
   build: {
     outDir: "dist",
     lib: {
