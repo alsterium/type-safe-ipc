@@ -7,7 +7,9 @@ import type { allApis } from "../main/api/";
 export type ApiType<Module extends Record<string, (...args: any[]) => any>> = {
   [FunctionName in keyof Module]: (
     ...args: Parameters<Module[FunctionName]>
-  ) => Promise<ReturnType<Module[FunctionName]>>;
+  ) => ReturnType<Module[FunctionName]> extends Promise<any>
+  ? ReturnType<Module[FunctionName]>
+  : Promise<ReturnType<Module[FunctionName]>>;
 };
 
 /**
