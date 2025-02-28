@@ -1,5 +1,5 @@
 import { app } from "electron";
-import { registerApiToIpcMain } from "./register-ipc";
+import { registerApiToIpcMain } from "./ipc-util-main";
 import { allApis } from "./api";
 import { BrowserWindow } from "electron/main";
 import path from "path";

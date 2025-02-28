@@ -4,10 +4,10 @@ import type { allApis } from "../main/api/";
  * API関数群の型を変換するヘルパー型
  * 例: greetings: (...args: Parameters<typeof greetings>) => ReturnType<typeof greetings>
  */
-export type ApiType<FunctionMap extends Record<string, (...args: any[]) => any>> = {
-  [FunctionName in keyof FunctionMap]: (
-    ...args: Parameters<FunctionMap[FunctionName]>
-  ) => Promise<ReturnType<FunctionMap[FunctionName]>>;
+export type ApiType<Module extends Record<string, (...args: any[]) => any>> = {
+  [FunctionName in keyof Module]: (
+    ...args: Parameters<Module[FunctionName]>
+  ) => Promise<ReturnType<Module[FunctionName]>>;
 };
 
 /**
@@ -25,9 +25,9 @@ export type RendererApi = {
 export type ApiReturnTypes = {
   [ModuleName in keyof RendererApi]: {
     [FunctionName in keyof RendererApi[ModuleName]]:
-      RendererApi[ModuleName][FunctionName] extends (...args: any[]) => Promise<infer ReturnValue>
-        ? ReturnValue
-        : never;
+    RendererApi[ModuleName][FunctionName] extends (...args: any[]) => Promise<infer ReturnValue>
+    ? ReturnValue
+    : never;
   };
 };
 

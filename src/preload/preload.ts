@@ -1,5 +1,5 @@
-import { registerApiToIpcRenderer } from "./create-preload-binds";
+import { registerApiToIpcRenderer } from "./ipc-util-renderer";
 import { allApis } from "../main/api";
 
-registerApiToIpcRenderer("api", allApis);
+registerApiToIpcRenderer(allApis);
 
