@@ -1,6 +1,6 @@
 import { UserConfig } from "vite";
 import { builtinModules } from "module";
-import dummyApiTransformer from "./vite-plugin-api-transformer";
+import dummyApiTransformer from "../../plugin/vite-plugin-api-transformer";
 
 const config: UserConfig = {
   mode: "production",
