@@ -2,6 +2,7 @@
 import { Plugin } from 'vite';
 import path from 'path';
 import { Project, SyntaxKind } from 'ts-morph'
+import { transformDummyApi } from './dummy-api-transformer-common'
 
 /**
  * Vite プラグイン: API モジュールの型情報を解析し、ダミー API 実装を自動生成
@@ -25,61 +26,31 @@ import { Project, SyntaxKind } from 'ts-morph'
  * });
  * ```
  */
-export default function dummyApiTransformer(options: { apiTypesFile: string, tsconfigPath: string }): Plugin {
-  const resolvedApiTypesBasePath = path.dirname(path.resolve(options.apiTypesFile))
+export default function dummyApiTransformer(options: {
+  apiTypesFile: string;
+  tsconfigPath: string;
+}): Plugin {
+  const resolvedApiTypesBasePath = path.dirname(
+    path.resolve(options.apiTypesFile)
+  );
   const resolvedApiTypesPath = path.resolve(options.apiTypesFile);
   const resolvedTsconfigPath = path.resolve(options.tsconfigPath);
 
   const project = new Project({ tsConfigFilePath: resolvedTsconfigPath });
-  console.log('target:', resolvedApiTypesPath);
+  console.log("target:", resolvedApiTypesPath);
 
   return {
-    name: 'dummy-api-transformer',
-    enforce: 'pre',
-
+    name: "dummy-api-transformer",
+    enforce: "pre",
     transform(code, id) {
       if (path.resolve(id) !== resolvedApiTypesPath) return;
-      // TypeScript プロジェクトを作成し、型情報を取得できるようにする
-      const sourceFile = project.createSourceFile(path.resolve(id), code, { overwrite: true });
-
-      // `export default` のノードを取得
-      const exportAssignment = sourceFile.getExportAssignment((ea) => !ea.isExportEquals());
-      if (exportAssignment) {
-        const expression = exportAssignment.getExpression();
-        // `export default { someApi }` のオブジェクトリテラルか確認
-        if (expression.isKind(SyntaxKind.ObjectLiteralExpression)) {
-          const properties = expression.getProperties();
-          for (const prop of properties) {
-            if (prop.isKind(SyntaxKind.ShorthandPropertyAssignment)) {
-              const shortHandProp = prop;
-              const apiName = shortHandProp.getName();
-
-              // `import * as someApi from "..."` のパスを取得
-              const importDeclaration = sourceFile.getImportDeclarations().find((imp) => {
-                return imp.getNamespaceImport()?.getText() === apiName;
-              });
-
-              if (importDeclaration) {
-                const moduleSpecifier = importDeclaration.getModuleSpecifierValue();
-                const importSourceFile = project.addSourceFileAtPathIfExists(path.resolve(resolvedApiTypesBasePath, moduleSpecifier + ".ts"));
-                if (importSourceFile) {
-                  // モジュールに含まれる関数を取得
-                  const functions = importSourceFile.getFunctions().filter(func => func.isExported());
-                  const expandedPropeties = functions.map((func) => {
-                    return `${func.getName()} : () => {}`
-                  })
-                  // `someApi` を `{ someApi: { func1: () => {}, ... } }` の形に変換
-                  shortHandProp.replaceWithText(`${apiName} : {${expandedPropeties.join(",\n")}}`)
-                }
-              }
-            }
-          }
-        }
-      }
-
-      // 変換後のコードを返す
-      return { code: sourceFile.getFullText(), map: null }
-
-    }
+      const transformedCode = transformDummyApi(
+        code,
+        path.resolve(id),
+        project,
+        resolvedApiTypesBasePath
+      );
+      return { code: transformedCode, map: null };
+    },
   };
 }
