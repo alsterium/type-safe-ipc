@@ -3,12 +3,14 @@ import { ipcMain } from "electron";
 /**
  * IpcMainにApiを登録する
  * @param apis Apiのオブジェクト
- * 
+ *
  * apisを元に、"apiName.methodName"のチャネル名でipcMain.handleに登録する
- * 
+ *
  * 例: "testApi.greetings", "licenseApi.greetings", ...
  */
-export function registerApiToIpcMain<Modules extends Record<string, any>>(apis: Modules) {
+export function registerApiToIpcMain<Modules extends Record<string, any>>(
+  apis: Modules,
+) {
   // apis: { testApi: { greetings:()=>... }, licenseApi: { greetings:()=>... }, ... }
   for (const [apiName, apiModule] of Object.entries(apis)) {
     for (const [funcName, func] of Object.entries(apiModule)) {

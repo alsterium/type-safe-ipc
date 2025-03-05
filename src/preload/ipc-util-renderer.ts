@@ -8,7 +8,7 @@ import { ipcRenderer, contextBridge } from "electron";
  * 例: window.api.testApi.greetings(...)
  */
 export function registerApiToIpcRenderer<Modules extends Record<string, any>>(
-  apis: Modules
+  apis: Modules,
 ) {
   // 入力されたAPIモジュールの型から、Promise化された戻り値の型を生成
   type PreloadBinds = {
@@ -16,13 +16,13 @@ export function registerApiToIpcRenderer<Modules extends Record<string, any>>(
       [FunctionName in keyof Modules[ModuleName]]: Modules[ModuleName][FunctionName] extends (
         ...args: infer Args
       ) => infer ResultType
-      ? (...args: Args) => Promise<
-        // ResultTypeがPromiseの場合はその型パラメータを、そうでなければResultTypeをそのまま使用
-        ResultType extends Promise<infer ResolvedValue>
-        ? ResolvedValue
-        : ResultType
-      >
-      : never;
+        ? (...args: Args) => Promise<
+            // ResultTypeがPromiseの場合はその型パラメータを、そうでなければResultTypeをそのまま使用
+            ResultType extends Promise<infer ResolvedValue>
+              ? ResolvedValue
+              : ResultType
+          >
+        : never;
     };
   };
 

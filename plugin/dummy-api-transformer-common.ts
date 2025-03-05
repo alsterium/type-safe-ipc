@@ -15,7 +15,7 @@ export function transformDummyApi(
   code: string,
   filePath: string,
   project: Project,
-  resolvedApiTypesBasePath: string
+  resolvedApiTypesBasePath: string,
 ): string {
   const sourceFile = project.createSourceFile(filePath, code, {
     overwrite: true,
@@ -23,7 +23,7 @@ export function transformDummyApi(
 
   // export default のノードを取得
   const exportAssignment = sourceFile.getExportAssignment(
-    (ea) => !ea.isExportEquals()
+    (ea) => !ea.isExportEquals(),
   );
   if (exportAssignment) {
     const expression = exportAssignment.getExpression();
@@ -39,10 +39,9 @@ export function transformDummyApi(
             .getImportDeclarations()
             .find((imp) => imp.getNamespaceImport()?.getText() === apiName);
           if (importDeclaration) {
-            const moduleSpecifier =
-              importDeclaration.getModuleSpecifierValue();
+            const moduleSpecifier = importDeclaration.getModuleSpecifierValue();
             const importSourceFile = project.addSourceFileAtPathIfExists(
-              path.resolve(resolvedApiTypesBasePath, moduleSpecifier + ".ts")
+              path.resolve(resolvedApiTypesBasePath, moduleSpecifier + ".ts"),
             );
             if (importSourceFile) {
               // 対象モジュールからエクスポートされた関数一覧を取得
@@ -54,7 +53,7 @@ export function transformDummyApi(
               });
               // ショートハンド記法を展開した形に変換
               shortHandProp.replaceWithText(
-                `${apiName} : {${expandedProperties.join(",\n")}}`
+                `${apiName} : {${expandedProperties.join(",\n")}}`,
               );
             }
           }

@@ -7,7 +7,10 @@ const config: UserConfig = {
   root: __dirname,
   envDir: process.cwd(),
   plugins: [
-    dummyApiTransformer({ apiTypesFile: '../main/api/index.ts', tsconfigPath: '../../tsconfig.json' })
+    dummyApiTransformer({
+      apiTypesFile: "../main/api/index.ts",
+      tsconfigPath: "../../tsconfig.json",
+    }),
   ],
   build: {
     outDir: "dist",

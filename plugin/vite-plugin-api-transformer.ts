@@ -1,8 +1,8 @@
 // vite-plugin-dummy-api.ts
-import { Plugin } from 'vite';
-import path from 'path';
-import { Project, SyntaxKind } from 'ts-morph'
-import { transformDummyApi } from './dummy-api-transformer-common'
+import { Plugin } from "vite";
+import path from "path";
+import { Project, SyntaxKind } from "ts-morph";
+import { transformDummyApi } from "./dummy-api-transformer-common";
 
 /**
  * Vite プラグイン: API モジュールの型情報を解析し、ダミー API 実装を自動生成
@@ -31,7 +31,7 @@ export default function dummyApiTransformer(options: {
   tsconfigPath: string;
 }): Plugin {
   const resolvedApiTypesBasePath = path.dirname(
-    path.resolve(options.apiTypesFile)
+    path.resolve(options.apiTypesFile),
   );
   const resolvedApiTypesPath = path.resolve(options.apiTypesFile);
   const resolvedTsconfigPath = path.resolve(options.tsconfigPath);
@@ -48,7 +48,7 @@ export default function dummyApiTransformer(options: {
         code,
         path.resolve(id),
         project,
-        resolvedApiTypesBasePath
+        resolvedApiTypesBasePath,
       );
       return { code: transformedCode, map: null };
     },

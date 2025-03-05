@@ -26,10 +26,11 @@ export type RendererApi = {
  */
 export type ApiReturnTypes = {
   [ModuleName in keyof RendererApi]: {
-    [FunctionName in keyof RendererApi[ModuleName]]:
-    RendererApi[ModuleName][FunctionName] extends (...args: any[]) => Promise<infer ReturnValue>
-    ? ReturnValue
-    : never;
+    [FunctionName in keyof RendererApi[ModuleName]]: RendererApi[ModuleName][FunctionName] extends (
+      ...args: any[]
+    ) => Promise<infer ReturnValue>
+      ? ReturnValue
+      : never;
   };
 };
 
