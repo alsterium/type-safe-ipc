@@ -1,3 +1,4 @@
+/* eslint @typescript-eslint/no-unused-vars: 0 */
 export function greetings() {
   return "greetings from MainProcess!";
 }
