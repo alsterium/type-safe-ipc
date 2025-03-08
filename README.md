@@ -5,6 +5,12 @@
 `Type-Safe-IPC` は、Electron の IPC(Inter-Process Communication)を安全に行うための実装例です。
 `ipcMain`と`ipcRenderer`のチャネル名の管理と型の整合性を自動化することで、開発中の実装ミスや型エラーを未然に防ぎます。
 
+## コマンド
+```bash
+npm i
+npm run dev
+```
+
 ## 特徴
 
 - **統一的な API 定義**: `src/main/api/index.ts` 内でエクスポートした関数群が、そのままレンダラープロセス（`window.api`）で利用可能
